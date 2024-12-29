@@ -1,16 +1,33 @@
 package com.techie.microservices.inventory.controller;
 
+import com.techie.microservices.inventory.dto.InventoryRequest;
+import com.techie.microservices.inventory.dto.InventoryResponse;
 import com.techie.microservices.inventory.services.InventoryService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
+
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/inventory")
-@RequiredArgsConstructor
+@RequestMapping("/api/inventory")
 public class inventoryController {
 
     private final InventoryService inventoryService;
+
+    public inventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public boolean isInStock(@RequestParam String skuCode, @RequestParam int quantity){
+        return inventoryService.isInStock(skuCode, quantity);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public InventoryResponse addInventory(@RequestBody InventoryRequest inventoryRequest){
+        return inventoryService.addInventory(inventoryRequest);
+    }
 }
